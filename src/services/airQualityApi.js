@@ -95,7 +95,12 @@ function normalizeText(value) {
 
 function isAlmatyQuery(query) {
   const normalizedQuery = normalizeText(query);
-  return ['алматы', 'almaty', 'alma-ata', 'алма-ата'].includes(normalizedQuery);
+  return (
+    normalizedQuery.includes('алматы') ||
+    normalizedQuery.includes('almaty') ||
+    normalizedQuery.includes('алма-ата') ||
+    normalizedQuery.includes('alma-ata')
+  );
 }
 
 function matchDistrict(result, districtQuery) {
