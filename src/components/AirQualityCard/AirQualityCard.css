@@ -1,0 +1,134 @@
+﻿.air-card {
+  display: grid;
+  gap: 1.1rem;
+  padding: 1.25rem;
+  border-radius: 18px;
+  background: linear-gradient(170deg, rgba(9, 34, 55, 0.95), rgba(6, 20, 35, 0.95));
+  border: 1px solid rgba(193, 224, 255, 0.2);
+  color: #edf6ff;
+}
+
+.air-card__headline {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.6rem;
+  align-items: flex-start;
+}
+
+.air-card__location {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.air-card__timezone {
+  margin: 0;
+  color: #a7c7e4;
+  font-size: 0.9rem;
+}
+
+.air-card__info-btn {
+  border: 1px solid rgba(180, 223, 255, 0.42);
+  background: rgba(19, 78, 119, 0.36);
+  color: #e8f5ff;
+  border-radius: 10px;
+  padding: 0.45rem 0.8rem;
+  cursor: pointer;
+  font-size: 0.86rem;
+}
+
+.air-card__metrics {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 1rem;
+}
+
+.air-card__aqi {
+  border-radius: 14px;
+  padding: 1rem;
+  color: #102230;
+}
+
+.air-card__aqi--good {
+  background: linear-gradient(160deg, #78efab, #bdf9da);
+}
+
+.air-card__aqi--moderate {
+  background: linear-gradient(160deg, #ffe58d, #fff5c6);
+}
+
+.air-card__aqi--sensitive {
+  background: linear-gradient(160deg, #ffd2a1, #ffebcf);
+}
+
+.air-card__aqi--bad {
+  background: linear-gradient(160deg, #ffa28f, #ffd9d1);
+}
+
+.air-card__aqi--very-bad {
+  background: linear-gradient(160deg, #ee8fc3, #f8d6e9);
+}
+
+.air-card__aqi--hazardous {
+  background: linear-gradient(160deg, #b28bff, #ddd1ff);
+}
+
+.air-card__aqi-label {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.air-card__aqi-value {
+  margin: 0.35rem 0;
+  font-size: 2.4rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.air-card__aqi-status {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.air-card__details {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(180px, 1fr));
+  gap: 0.8rem;
+}
+
+.air-card__details div {
+  padding: 0.9rem;
+  border-radius: 12px;
+  background: rgba(168, 205, 238, 0.15);
+}
+
+.air-card__details dt {
+  margin-bottom: 0.4rem;
+  font-size: 0.8rem;
+  color: #bad8f3;
+}
+
+.air-card__details dd {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.air-card__hint {
+  margin: 0;
+  color: #bad8f3;
+  font-size: 0.88rem;
+}
+
+@media (max-width: 760px) {
+  .air-card__metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .air-card__details {
+    grid-template-columns: 1fr;
+  }
+}

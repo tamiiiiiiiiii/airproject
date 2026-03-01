@@ -1,0 +1,109 @@
+.air-info-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+
+.air-info-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgba(2, 10, 18, 0.76);
+}
+
+.air-info-modal__panel {
+  position: relative;
+  width: min(840px, 100%);
+  max-height: calc(100vh - 2rem);
+  overflow: auto;
+  padding: 1.2rem;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #0a2238 0%, #061727 100%);
+  border: 1px solid rgba(176, 217, 255, 0.28);
+  color: #edf6ff;
+}
+
+.air-info-modal__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+}
+
+.air-info-modal__header h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.air-info-modal__close {
+  border: 1px solid rgba(180, 223, 255, 0.4);
+  background: rgba(20, 72, 110, 0.45);
+  color: #edf6ff;
+  border-radius: 10px;
+  padding: 0.45rem 0.8rem;
+  cursor: pointer;
+}
+
+.air-info-modal__section {
+  margin-top: 1.2rem;
+}
+
+.air-info-modal__section h3 {
+  margin: 0 0 0.65rem;
+  font-size: 1rem;
+}
+
+.air-info-modal__metrics {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.air-info-modal__metrics li {
+  color: #cde5fb;
+  line-height: 1.35;
+}
+
+.air-info-modal__risk-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(180px, 1fr));
+  gap: 0.65rem;
+}
+
+.air-info-modal__risk-item {
+  padding: 0.7rem;
+  border-radius: 10px;
+  background: rgba(161, 203, 241, 0.12);
+}
+
+.air-info-modal__risk-range,
+.air-info-modal__risk-label,
+.air-info-modal__risk-text {
+  margin: 0;
+}
+
+.air-info-modal__risk-range {
+  font-size: 0.76rem;
+  color: #9dc7ea;
+}
+
+.air-info-modal__risk-label {
+  margin-top: 0.2rem;
+  font-weight: 600;
+}
+
+.air-info-modal__risk-text {
+  margin-top: 0.35rem;
+  font-size: 0.86rem;
+  color: #cde3f7;
+}
+
+@media (max-width: 700px) {
+  .air-info-modal__risk-list {
+    grid-template-columns: 1fr;
+  }
+}
