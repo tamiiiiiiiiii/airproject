@@ -3,6 +3,16 @@ const AIR_QUALITY_URL = 'https://air-quality-api.open-meteo.com/v1/air-quality';
 
 const POLLUTANTS =
   'us_aqi,european_aqi,pm10,pm2_5,carbon_monoxide,nitrogen_dioxide,ozone,sulphur_dioxide';
+const ALMATY_DISTRICTS = [
+  'Алмалинский',
+  'Алатауский',
+  'Ауэзовский',
+  'Бостандыкский',
+  'Жетысуский',
+  'Медеуский',
+  'Наурызбайский',
+  'Турксибский',
+];
 
 function getTodayInTimezone(timezone) {
   return new Intl.DateTimeFormat('en-CA', {
@@ -81,6 +91,11 @@ async function fetchLocationCandidates(query) {
 
 function normalizeText(value) {
   return (value || '').toString().toLowerCase().trim();
+}
+
+function isAlmatyQuery(query) {
+  const normalizedQuery = normalizeText(query);
+  return ['алматы', 'almaty', 'alma-ata', 'алма-ата'].includes(normalizedQuery);
 }
 
 function matchDistrict(result, districtQuery) {
@@ -163,6 +178,10 @@ export async function fetchDistrictOptions(query) {
       uniqueDistricts.add(candidate);
     });
   });
+
+  if (isAlmatyQuery(trimmedQuery)) {
+    ALMATY_DISTRICTS.forEach((district) => uniqueDistricts.add(district));
+  }
 
   return Array.from(uniqueDistricts).sort((a, b) => a.localeCompare(b, 'ru'));
 }
