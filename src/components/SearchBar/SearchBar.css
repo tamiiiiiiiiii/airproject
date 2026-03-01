@@ -39,8 +39,20 @@
   font-size: 1rem;
 }
 
-.search-bar__input--district {
+.search-bar__select {
+  min-width: 250px;
   max-width: 280px;
+  padding: 0.82rem 0.95rem;
+  border-radius: 10px;
+  border: 1px solid rgba(195, 224, 255, 0.35);
+  background: rgba(255, 255, 255, 0.95);
+  color: #0b2f49;
+  font-size: 0.95rem;
+}
+
+.search-bar__select:focus {
+  outline: 2px solid #6bc7ff;
+  outline-offset: 1px;
 }
 
 .search-bar__input:focus {
@@ -69,8 +81,9 @@
     flex-direction: column;
   }
 
-  .search-bar__input--district {
+  .search-bar__select {
     max-width: none;
+    min-width: 0;
   }
 
   .search-bar__button {

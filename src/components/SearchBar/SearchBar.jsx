@@ -1,10 +1,19 @@
 import './SearchBar.css';
 
-export function SearchBar({ query, district, loading, onQueryChange, onDistrictChange, onSubmit }) {
+export function SearchBar({
+  query,
+  district,
+  districtOptions,
+  districtsLoading,
+  loading,
+  onQueryChange,
+  onDistrictChange,
+  onSubmit,
+}) {
   return (
     <form className="search-bar" onSubmit={onSubmit}>
       <label className="search-bar__label" htmlFor="location-search">
-        Поиск города
+        Поиск города...
       </label>
 
       <div className="search-bar__controls">
@@ -12,22 +21,34 @@ export function SearchBar({ query, district, loading, onQueryChange, onDistrictC
           id="location-search"
           className="search-bar__input"
           type="text"
-          placeholder="Например: Алматы, Токио, Москва"
+          placeholder="Например: Алматы, Tokyo, Москва"
           value={query}
           onChange={(event) => onQueryChange(event.target.value)}
         />
 
-        <label className="search-bar__sr-only" htmlFor="district-search">
-          Поиск района
+        <label className="search-bar__sr-only" htmlFor="district-select">
+          Выбрать район
         </label>
-        <input
-          id="district-search"
-          className="search-bar__input search-bar__input--district"
-          type="text"
-          placeholder="Район (опционально): Бостандыкский"
+        <select
+          id="district-select"
+          className="search-bar__select"
           value={district}
           onChange={(event) => onDistrictChange(event.target.value)}
-        />
+          disabled={!query.trim() || districtsLoading}
+        >
+          <option value="">
+            {districtsLoading
+              ? 'Загрузка районов...'
+              : districtOptions.length
+                ? 'Район: не выбран'
+                : 'Районы не найдены'}
+          </option>
+          {districtOptions.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
 
         <button className="search-bar__button" type="submit" disabled={loading}>
           {loading ? 'Загрузка...' : 'Показать данные'}

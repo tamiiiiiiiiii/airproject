@@ -67,6 +67,18 @@ async function fetchJson(url) {
   return response.json();
 }
 
+async function fetchLocationCandidates(query) {
+  const geocodingParams = new URLSearchParams({
+    name: query,
+    count: '30',
+    language: 'ru',
+    format: 'json',
+  });
+
+  const locationData = await fetchJson(`${GEOCODING_URL}?${geocodingParams.toString()}`);
+  return locationData?.results || [];
+}
+
 function normalizeText(value) {
   return (value || '').toString().toLowerCase().trim();
 }
@@ -82,15 +94,7 @@ function matchDistrict(result, districtQuery) {
 }
 
 export async function fetchAirQualityByQuery(query, district = '') {
-  const geocodingParams = new URLSearchParams({
-    name: query,
-    count: '20',
-    language: 'ru',
-    format: 'json',
-  });
-
-  const locationData = await fetchJson(`${GEOCODING_URL}?${geocodingParams.toString()}`);
-  const results = locationData?.results || [];
+  const results = await fetchLocationCandidates(query);
   const location = results.find((item) => matchDistrict(item, district));
 
   if (!location) {
@@ -133,4 +137,32 @@ export async function fetchAirQualityByQuery(query, district = '') {
     current: pickCurrentHourRecord(mappedHourly, location.timezone),
     hourly: mappedHourly,
   };
+}
+
+export async function fetchDistrictOptions(query) {
+  const trimmedQuery = query.trim();
+  if (!trimmedQuery) {
+    return [];
+  }
+
+  const results = await fetchLocationCandidates(trimmedQuery);
+  const uniqueDistricts = new Set();
+
+  results.forEach((result) => {
+    const candidates = [result.admin3, result.admin2];
+
+    candidates.forEach((candidate) => {
+      if (!candidate) {
+        return;
+      }
+
+      if (normalizeText(candidate) === normalizeText(result.name)) {
+        return;
+      }
+
+      uniqueDistricts.add(candidate);
+    });
+  });
+
+  return Array.from(uniqueDistricts).sort((a, b) => a.localeCompare(b, 'ru'));
 }
