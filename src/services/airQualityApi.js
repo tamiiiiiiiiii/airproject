@@ -1,7 +1,8 @@
 const GEOCODING_URL = 'https://geocoding-api.open-meteo.com/v1/search';
 const AIR_QUALITY_URL = 'https://air-quality-api.open-meteo.com/v1/air-quality';
 
-const POLLUTANTS = 'us_aqi,european_aqi,pm10,pm2_5,carbon_monoxide,nitrogen_dioxide,ozone,sulphur_dioxide';
+const POLLUTANTS =
+  'us_aqi,european_aqi,pm10,pm2_5,carbon_monoxide,nitrogen_dioxide,ozone,sulphur_dioxide';
 
 function getTodayInTimezone(timezone) {
   return new Intl.DateTimeFormat('en-CA', {
@@ -66,18 +67,38 @@ async function fetchJson(url) {
   return response.json();
 }
 
-export async function fetchAirQualityByQuery(query) {
+function normalizeText(value) {
+  return (value || '').toString().toLowerCase().trim();
+}
+
+function matchDistrict(result, districtQuery) {
+  const normalizedDistrict = normalizeText(districtQuery);
+  if (!normalizedDistrict) {
+    return true;
+  }
+
+  const fields = [result.admin1, result.admin2, result.admin3, result.name].map(normalizeText);
+  return fields.some((field) => field.includes(normalizedDistrict));
+}
+
+export async function fetchAirQualityByQuery(query, district = '') {
   const geocodingParams = new URLSearchParams({
     name: query,
-    count: '5',
+    count: '20',
     language: 'ru',
     format: 'json',
   });
 
   const locationData = await fetchJson(`${GEOCODING_URL}?${geocodingParams.toString()}`);
-  const location = locationData?.results?.[0];
+  const results = locationData?.results || [];
+  const location = results.find((item) => matchDistrict(item, district));
 
   if (!location) {
+    if (district.trim()) {
+      throw new Error(
+        'Локация найдена, но район не совпал. Попробуйте уточнить район или оставьте поле пустым.'
+      );
+    }
     throw new Error('Локация не найдена. Попробуйте другое название.');
   }
 
@@ -105,6 +126,8 @@ export async function fetchAirQualityByQuery(query) {
       name: location.name,
       country: location.country,
       admin1: location.admin1,
+      admin2: location.admin2,
+      admin3: location.admin3,
       timezone: location.timezone,
     },
     current: pickCurrentHourRecord(mappedHourly, location.timezone),

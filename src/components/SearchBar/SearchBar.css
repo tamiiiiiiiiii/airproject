@@ -13,6 +13,17 @@
   color: #eaf6ff;
 }
 
+.search-bar__sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
 .search-bar__controls {
   display: flex;
   gap: 0.7rem;
@@ -26,6 +37,10 @@
   background: rgba(255, 255, 255, 0.95);
   color: #0b2f49;
   font-size: 1rem;
+}
+
+.search-bar__input--district {
+  max-width: 280px;
 }
 
 .search-bar__input:focus {
@@ -52,6 +67,10 @@
 @media (max-width: 640px) {
   .search-bar__controls {
     flex-direction: column;
+  }
+
+  .search-bar__input--district {
+    max-width: none;
   }
 
   .search-bar__button {

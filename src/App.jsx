@@ -9,6 +9,7 @@ import { fetchAirQualityByQuery } from './services/airQualityApi';
 
 function App() {
   const [query, setQuery] = useState('Almaty');
+  const [district, setDistrict] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [result, setResult] = useState(null);
@@ -16,19 +17,21 @@ function App() {
 
   const locationTitle = useMemo(() => {
     if (!result) {
-      return 'Введите город';
+      return 'Введите город или страну';
     }
 
-    const { name, admin1, country } = result.location;
-    return [name, admin1, country].filter(Boolean).join(', ');
+    const { name, admin3, admin2, admin1, country } = result.location;
+    return [name, admin3, admin2, admin1, country].filter(Boolean).join(', ');
   }, [result]);
 
   const handleSearch = async (event) => {
     event.preventDefault();
 
-    const trimmed = query.trim();
-    if (!trimmed) {
-      setError('Введите название города.');
+    const trimmedQuery = query.trim();
+    const trimmedDistrict = district.trim();
+
+    if (!trimmedQuery) {
+      setError('Введите название города или страны.');
       return;
     }
 
@@ -36,7 +39,7 @@ function App() {
     setError('');
 
     try {
-      const payload = await fetchAirQualityByQuery(trimmed);
+      const payload = await fetchAirQualityByQuery(trimmedQuery, trimmedDistrict);
       setResult(payload);
     } catch (requestError) {
       setResult(null);
@@ -54,8 +57,10 @@ function App() {
 
         <SearchBar
           query={query}
+          district={district}
           loading={loading}
           onQueryChange={setQuery}
+          onDistrictChange={setDistrict}
           onSubmit={handleSearch}
         />
 
@@ -63,11 +68,13 @@ function App() {
 
         <section className="app__content" aria-live="polite">
           {loading && <p className="app__status">Загружаем свежие данные по воздуху...</p>}
+
           {!loading && !result && !error && (
             <p className="app__status">
               Начните с поиска, чтобы увидеть текущий уровень загрязнения и историю за день.
             </p>
           )}
+
           {!loading && result && (
             <>
               <AirQualityCard
@@ -81,6 +88,7 @@ function App() {
           )}
         </section>
       </div>
+
       <AirInfoModal isOpen={infoModalOpen} onClose={() => setInfoModalOpen(false)} />
     </main>
   );
