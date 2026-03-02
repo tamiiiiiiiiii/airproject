@@ -1,0 +1,112 @@
+.kz-ranking {
+  padding: 1.2rem;
+  border-radius: 18px;
+  background: rgba(7, 28, 47, 0.9);
+  border: 1px solid rgba(182, 219, 250, 0.22);
+  color: #ecf6ff;
+}
+
+.kz-ranking__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.kz-ranking__header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.kz-ranking__updated {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #a6cae7;
+}
+
+.kz-ranking__state {
+  margin: 0.8rem 0 0;
+  font-size: 0.92rem;
+  color: #cbe5fb;
+}
+
+.kz-ranking__state--error {
+  color: #ffd4d4;
+}
+
+.kz-ranking__list {
+  display: grid;
+  gap: 0.55rem;
+  margin-top: 0.75rem;
+}
+
+.kz-ranking__row {
+  display: grid;
+  grid-template-columns: 54px 1fr 110px 130px 1fr;
+  gap: 0.6rem;
+  align-items: center;
+  padding: 0.55rem 0.7rem;
+  border-radius: 10px;
+  background: rgba(157, 199, 233, 0.1);
+}
+
+.kz-ranking__rank,
+.kz-ranking__city,
+.kz-ranking__meta {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.kz-ranking__rank {
+  color: #9dc7ea;
+  font-weight: 600;
+}
+
+.kz-ranking__city {
+  font-weight: 600;
+}
+
+.kz-ranking__badge {
+  margin: 0;
+  text-align: center;
+  border-radius: 999px;
+  padding: 0.3rem 0.5rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #102230;
+}
+
+.kz-ranking__badge--good {
+  background: #78efab;
+}
+
+.kz-ranking__badge--moderate {
+  background: #ffe58d;
+}
+
+.kz-ranking__badge--sensitive {
+  background: #ffd2a1;
+}
+
+.kz-ranking__badge--bad {
+  background: #ffa28f;
+}
+
+.kz-ranking__badge--very-bad {
+  background: #ee8fc3;
+}
+
+.kz-ranking__badge--hazardous {
+  background: #b28bff;
+}
+
+@media (max-width: 860px) {
+  .kz-ranking__row {
+    grid-template-columns: 44px 1fr 90px;
+  }
+
+  .kz-ranking__meta {
+    display: none;
+  }
+}
