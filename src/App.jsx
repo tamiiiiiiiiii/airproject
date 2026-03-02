@@ -5,7 +5,12 @@ import { SearchBar } from './components/SearchBar/SearchBar';
 import { AirQualityCard } from './components/AirQualityCard/AirQualityCard';
 import { DailyAirTimeline } from './components/DailyAirTimeline/DailyAirTimeline';
 import { AirInfoModal } from './components/AirInfoModal/AirInfoModal';
-import { fetchAirQualityByQuery, fetchDistrictOptions } from './services/airQualityApi';
+import { MapPickerModal } from './components/MapPickerModal/MapPickerModal';
+import {
+  fetchAirQualityByCoordinates,
+  fetchAirQualityByQuery,
+  fetchDistrictOptions,
+} from './services/airQualityApi';
 
 function App() {
   const [query, setQuery] = useState('Almaty');
@@ -16,6 +21,7 @@ function App() {
   const [error, setError] = useState('');
   const [result, setResult] = useState(null);
   const [infoModalOpen, setInfoModalOpen] = useState(false);
+  const [mapModalOpen, setMapModalOpen] = useState(false);
 
   const locationTitle = useMemo(() => {
     if (!result) {
@@ -43,6 +49,24 @@ function App() {
     try {
       const payload = await fetchAirQualityByQuery(trimmedQuery, trimmedDistrict);
       setResult(payload);
+    } catch (requestError) {
+      setResult(null);
+      setError(requestError.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleMapConfirm = async ({ lat, lon }) => {
+    setLoading(true);
+    setError('');
+
+    try {
+      const payload = await fetchAirQualityByCoordinates(lat, lon);
+      setResult(payload);
+      setMapModalOpen(false);
+      setQuery(payload.location.name || query);
+      setDistrict(payload.location.admin2 || payload.location.admin3 || '');
     } catch (requestError) {
       setResult(null);
       setError(requestError.message);
@@ -104,6 +128,7 @@ function App() {
           loading={loading}
           onQueryChange={setQuery}
           onDistrictChange={setDistrict}
+          onOpenMap={() => setMapModalOpen(true)}
           onSubmit={handleSearch}
         />
 
@@ -133,6 +158,12 @@ function App() {
       </div>
 
       <AirInfoModal isOpen={infoModalOpen} onClose={() => setInfoModalOpen(false)} />
+      <MapPickerModal
+        isOpen={mapModalOpen}
+        loading={loading}
+        onClose={() => setMapModalOpen(false)}
+        onConfirm={handleMapConfirm}
+      />
     </main>
   );
 }

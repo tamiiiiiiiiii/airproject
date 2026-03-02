@@ -1,0 +1,101 @@
+.map-picker {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+
+.map-picker__backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  background: rgba(2, 10, 18, 0.76);
+}
+
+.map-picker__panel {
+  position: relative;
+  width: min(920px, 100%);
+  border-radius: 16px;
+  padding: 1rem;
+  background: linear-gradient(180deg, #0b243b 0%, #071a2c 100%);
+  border: 1px solid rgba(179, 220, 255, 0.26);
+  color: #ecf6ff;
+}
+
+.map-picker__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.map-picker__header h2 {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.map-picker__close {
+  border: 1px solid rgba(180, 223, 255, 0.4);
+  background: rgba(20, 72, 110, 0.45);
+  color: #edf6ff;
+  border-radius: 10px;
+  padding: 0.45rem 0.8rem;
+  cursor: pointer;
+}
+
+.map-picker__hint {
+  margin: 0.7rem 0 0;
+  color: #b6d7f1;
+  font-size: 0.9rem;
+}
+
+.map-picker__error {
+  margin: 0.7rem 0 0;
+  color: #ffd3d3;
+  font-size: 0.9rem;
+}
+
+.map-picker__map {
+  margin-top: 0.8rem;
+  height: min(58vh, 520px);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.map-picker__actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.75rem;
+}
+
+.map-picker__coords {
+  margin: 0;
+  color: #c7e4fd;
+  font-size: 0.88rem;
+}
+
+.map-picker__confirm {
+  border: none;
+  border-radius: 10px;
+  padding: 0.6rem 1rem;
+  font-weight: 600;
+  background: linear-gradient(120deg, #00a5d6, #4ad6b0);
+  color: #03262e;
+  cursor: pointer;
+}
+
+.map-picker__confirm:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+@media (max-width: 700px) {
+  .map-picker__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

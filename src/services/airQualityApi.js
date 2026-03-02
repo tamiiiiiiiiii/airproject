@@ -1,4 +1,5 @@
 const GEOCODING_URL = 'https://geocoding-api.open-meteo.com/v1/search';
+const REVERSE_GEOCODING_URL = 'https://geocoding-api.open-meteo.com/v1/reverse';
 const AIR_QUALITY_URL = 'https://air-quality-api.open-meteo.com/v1/air-quality';
 
 const POLLUTANTS =
@@ -15,23 +16,43 @@ const ALMATY_DISTRICTS = [
 ];
 
 function getTodayInTimezone(timezone) {
-  return new Intl.DateTimeFormat('en-CA', {
-    timeZone: timezone,
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).format(new Date());
+  try {
+    return new Intl.DateTimeFormat('en-CA', {
+      timeZone: timezone,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).format(new Date());
+  } catch {
+    return new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'UTC',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).format(new Date());
+  }
 }
 
 function getCurrentHourInTimezone(timezone) {
-  return Number.parseInt(
-    new Intl.DateTimeFormat('en-US', {
-      timeZone: timezone,
-      hour: '2-digit',
-      hour12: false,
-    }).format(new Date()),
-    10
-  );
+  try {
+    return Number.parseInt(
+      new Intl.DateTimeFormat('en-US', {
+        timeZone: timezone,
+        hour: '2-digit',
+        hour12: false,
+      }).format(new Date()),
+      10
+    );
+  } catch {
+    return Number.parseInt(
+      new Intl.DateTimeFormat('en-US', {
+        timeZone: 'UTC',
+        hour: '2-digit',
+        hour12: false,
+      }).format(new Date()),
+      10
+    );
+  }
 }
 
 function mapHourlyData(hourly) {
@@ -113,24 +134,26 @@ function matchDistrict(result, districtQuery) {
   return fields.some((field) => field.includes(normalizedDistrict));
 }
 
-export async function fetchAirQualityByQuery(query, district = '') {
-  const results = await fetchLocationCandidates(query);
-  const location = results.find((item) => matchDistrict(item, district));
+function toLocationPayload(source, fallbackName) {
+  return {
+    name: source?.name || fallbackName || 'Выбранная точка',
+    country: source?.country || '',
+    admin1: source?.admin1 || '',
+    admin2: source?.admin2 || '',
+    admin3: source?.admin3 || '',
+    timezone: source?.timezone || 'UTC',
+    latitude: source?.latitude,
+    longitude: source?.longitude,
+  };
+}
 
-  if (!location) {
-    if (district.trim()) {
-      throw new Error(
-        'Локация найдена, но район не совпал. Попробуйте уточнить район или оставьте поле пустым.'
-      );
-    }
-    throw new Error('Локация не найдена. Попробуйте другое название.');
-  }
-
-  const today = getTodayInTimezone(location.timezone);
+async function fetchAirQualityForLocation(location) {
+  const timezone = location.timezone || 'UTC';
+  const today = getTodayInTimezone(timezone);
   const airParams = new URLSearchParams({
     latitude: String(location.latitude),
     longitude: String(location.longitude),
-    timezone: location.timezone,
+    timezone,
     start_date: today,
     end_date: today,
     hourly: POLLUTANTS,
@@ -152,11 +175,55 @@ export async function fetchAirQualityByQuery(query, district = '') {
       admin1: location.admin1,
       admin2: location.admin2,
       admin3: location.admin3,
-      timezone: location.timezone,
+      timezone,
     },
-    current: pickCurrentHourRecord(mappedHourly, location.timezone),
+    current: pickCurrentHourRecord(mappedHourly, timezone),
     hourly: mappedHourly,
   };
+}
+
+export async function fetchAirQualityByQuery(query, district = '') {
+  const results = await fetchLocationCandidates(query);
+  const location = results.find((item) => matchDistrict(item, district));
+
+  if (!location) {
+    if (district.trim()) {
+      throw new Error(
+        'Локация найдена, но район не совпал. Попробуйте уточнить район или оставьте поле пустым.'
+      );
+    }
+    throw new Error('Локация не найдена. Попробуйте другое название.');
+  }
+
+  return fetchAirQualityForLocation(toLocationPayload(location));
+}
+
+export async function fetchAirQualityByCoordinates(lat, lon) {
+  const reverseParams = new URLSearchParams({
+    latitude: String(lat),
+    longitude: String(lon),
+    count: '1',
+    language: 'ru',
+    format: 'json',
+  });
+
+  const reverseData = await fetchJson(`${REVERSE_GEOCODING_URL}?${reverseParams.toString()}`);
+  const nearest = reverseData?.results?.[0];
+
+  const location = toLocationPayload(
+    nearest
+      ? {
+          ...nearest,
+          latitude: lat,
+          longitude: lon,
+        }
+      : {
+          latitude: lat,
+          longitude: lon,
+        }
+  );
+
+  return fetchAirQualityForLocation(location);
 }
 
 export async function fetchDistrictOptions(query) {

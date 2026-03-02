@@ -9,6 +9,7 @@ export function SearchBar({
   loading,
   onQueryChange,
   onDistrictChange,
+  onOpenMap,
   onSubmit,
 }) {
   const [isDistrictOpen, setDistrictOpen] = useState(false);
@@ -107,6 +108,9 @@ export function SearchBar({
 
         <button className="search-bar__button" type="submit" disabled={loading}>
           {loading ? 'Загрузка...' : 'Показать данные'}
+        </button>
+        <button className="search-bar__map-button" type="button" onClick={onOpenMap}>
+          Выбрать на карте
         </button>
       </div>
     </form>
