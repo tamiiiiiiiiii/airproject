@@ -161,6 +161,7 @@ function App() {
       <MapPickerModal
         isOpen={mapModalOpen}
         loading={loading}
+        initialQuery={query}
         onClose={() => setMapModalOpen(false)}
         onConfirm={handleMapConfirm}
       />
